@@ -242,4 +242,16 @@ inline void invvpid(invvpid_t type, invvpid_desc_t* descriptor = nullptr) noexce
   ia32_asm_inv_vpid(static_cast<uint32_t>(type), descriptor);
 }
 
+inline void invvpid_single_context(uint16_t vpid, uint64_t linear_address = 0) noexcept
+{
+  invvpid_desc_t descriptor = { vpid, 0, 0, linear_address };
+  invvpid(invvpid_t::single_context, &descriptor);
+}
+
+inline void invvpid_no_globals(uint16_t vpid) noexcept
+{
+  invvpid_desc_t descriptor = { vpid, 0, 0, 0 };
+  invvpid(invvpid_t::single_context_retaining_globals, &descriptor);
+}
+
 }
