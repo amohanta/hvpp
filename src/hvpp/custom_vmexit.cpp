@@ -135,7 +135,6 @@ void custom_vmexit_handler::handle_execute_vmcall(vcpu_t& vp) noexcept
   }
 
   vmx::invept(vmx::invept_t::all_context);
-  vmx::invvpid(vmx::invvpid_t::all_context);
 }
 
 void custom_vmexit_handler::handle_ept_violation(vcpu_t& vp) noexcept
@@ -172,7 +171,6 @@ void custom_vmexit_handler::handle_ept_violation(vcpu_t& vp) noexcept
   }
 
   vmx::invept(vmx::invept_t::all_context);
-  vmx::invvpid(vmx::invvpid_t::all_context);
 
   //
   // Make the instruction which fetched the memory to be executed again (this

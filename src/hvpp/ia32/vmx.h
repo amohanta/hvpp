@@ -202,8 +202,8 @@ enum class invvpid_t : uint32_t
 
 struct invept_desc_t
 {
-  ept_ptr_t ept_pointer;
-  uint64_t  reserved;
+  uint64_t ept_pointer;
+  uint64_t reserved;
 };
 
 static_assert(sizeof(invept_desc_t) == 16);
@@ -231,6 +231,12 @@ inline void invept(invept_t type, invept_desc_t* descriptor = nullptr) noexcept
   ia32_asm_inv_ept(static_cast<uint32_t>(type), descriptor);
 }
 
+inline void invept_single_context(uint64_t ept_pointer) noexcept
+{
+  invept_desc_t descriptor = { ept_pointer, 0 };
+  invept(invept_t::single_context, &descriptor);
+}
+
 inline void invvpid(invvpid_t type, invvpid_desc_t* descriptor = nullptr) noexcept
 {
   if (!descriptor)
@@ -242,13 +248,19 @@ inline void invvpid(invvpid_t type, invvpid_desc_t* descriptor = nullptr) noexce
   ia32_asm_inv_vpid(static_cast<uint32_t>(type), descriptor);
 }
 
-inline void invvpid_single_context(uint16_t vpid, uint64_t linear_address = 0) noexcept
+inline void invvpid_individual_address(uint16_t vpid, uint64_t linear_address) noexcept
 {
   invvpid_desc_t descriptor = { vpid, 0, 0, linear_address };
+  invvpid(invvpid_t::individual_address, &descriptor);
+}
+
+inline void invvpid_single_context(uint16_t vpid) noexcept
+{
+  invvpid_desc_t descriptor = { vpid, 0, 0, 0 };
   invvpid(invvpid_t::single_context, &descriptor);
 }
 
-inline void invvpid_no_globals(uint16_t vpid) noexcept
+inline void invvpid_single_context_retaining_globals(uint16_t vpid) noexcept
 {
   invvpid_desc_t descriptor = { vpid, 0, 0, 0 };
   invvpid(invvpid_t::single_context_retaining_globals, &descriptor);

@@ -387,7 +387,7 @@ void vmexit_handler::handle_mov_cr(vcpu_t& vp) noexcept
                 //     emulated.
                 // (ref: Vol3C[28.3.3.3(Guidelines for Use of the INVVPID Instruction)])
                 //
-                vmx::invvpid_no_globals(vp.vcpu_id());
+                vmx::invvpid_single_context_retaining_globals(vp.vcpu_id());
             }
           break;
 
